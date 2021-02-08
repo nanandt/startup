@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"bwastartup/helper"
 	"bwastartup/user"
 	"net/http"
 
@@ -29,9 +30,11 @@ func (h *userHandler) RegisterUser(c *gin.Context){
 
 	user,err := h.userService.RegisterUser(input)
 
+	response := helper.APIResponse("Account has been register", http.StatusOK, "success", user)
+
 	if err != nil{
 		c.JSON(http.StatusBadRequest, nil)
 	}
 
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, response)
 }
