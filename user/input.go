@@ -3,8 +3,8 @@ package user
 // RegisterUserInput is ...
 type RegisterUserInput struct {
 	// struct ini mewakili apa yg diinputkan oleh user (form yg ada di frontend)
-	Name       string
-	Occupation string
-	Email      string
-	Password   string
+	Name       string `json:"name" binding:"required"`
+	Occupation string `json:"occupation" binding:"required"`
+	Email      string `json:"email" binding:"required,email"`
+	Password   string `json:"password binding:"required"`
 }
