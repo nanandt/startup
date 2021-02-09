@@ -59,14 +59,14 @@ func (s *service) Login(input LoginInput) (User, error){
 
 	// pengecekan user ada nilainya atau tidak
 	if user.ID == 0 {
-		return user, errors.New("User Not Found")
+		return user, errors.New("User Not Found on that Email")
 	}
 
 	// mencocokan password yg dimasukan user / yg sudah diregistrasi
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
 
 	if err != nil{
-		return user, err
+		return user, errors.New("Your Password is False")
 	}
 
 
