@@ -3,6 +3,7 @@ package main
 import (
 	"bwastartup/handler"
 	"bwastartup/user"
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,16 @@ func main() {
 
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
+
+	userByEmail, err := userRepository.FindByEmail("jakaaa@gmail.com")
+	if err != nil{
+		fmt.Println(err.Error())
+	}
+
+	if userByEmail.ID == 0{
+		fmt.Println("User tidak ditemukan")
+	}
+	fmt.Println(userByEmail.Name)
 
 	userHandler := handler.NewUserHandler(userService)
 

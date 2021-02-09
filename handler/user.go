@@ -49,3 +49,12 @@ func (h *userHandler) RegisterUser(c *gin.Context){
 
 	c.JSON(http.StatusOK, response)
 }
+
+func (h *userHandler) Login(c *gin.Context){
+	// user melakukan input email dan password
+	// input ditangkap di handler
+	// mapping dari input user ke input struct
+	// input struct passing ke service
+	// di service mencari dgn bantuan repositori user dgn email tertentu
+	// mencocokan password
+}
