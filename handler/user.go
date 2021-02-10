@@ -86,3 +86,12 @@ func (h *userHandler) Login(c *gin.Context){
 
 	c.JSON(http.StatusOK, response)
 }
+
+func CheckEmailAvailability(c *gin.Context){
+	// ada input email dari user
+	// input email di mapping ke struct input
+	// struct input di parsing ke service
+	// service memanggil repository - apakah email sudah ada atau belum
+	// repository query ke database
+
+}
