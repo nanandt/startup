@@ -149,7 +149,7 @@ func (h *userHandler) UploadAvatar(c *gin.Context){
 	}
 
 	// harusnya id didapat dari JWT
-	userID := 1
+	userID := 2
 
 	// image/namaFile.png
 	// menjadi
