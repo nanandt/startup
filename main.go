@@ -21,6 +21,9 @@ func main() {
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 
+	// test save avatar file name
+	// userService.SaveAvatar(1, "images/1-profile-png")
+
 	// cek email user
 	// userByEmail, err := userRepository.FindByEmail("jakaaa@gmail.com")
 	// if err != nil{
