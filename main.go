@@ -54,6 +54,21 @@ func main() {
 
 	// fmt.Println(user.Email)
 	// fmt.Println(user.Name)
+	// test validate token dan ex.token invalid
+	// token, err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0fQ.4VyKdWGh0T4g6_9zbr4U_FJqPuFUi6nOOEoFmff0KiA")
+	// if err != nil {
+	// 	fmt.Println("ERROR")
+	// 	fmt.Println("ERROR")
+	// 	fmt.Println("ERROR")
+	// }
+
+	// if token.Valid{
+	// 	fmt.Println("VALID")
+	// 	fmt.Println("VALID")
+	// 	fmt.Println("VALID")
+	// } else {
+	// 	fmt.Println("INVALID")
+	// }
 
 
 
