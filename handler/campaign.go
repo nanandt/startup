@@ -1,4 +1,4 @@
-package hendler
+package handler
 
 // tangkap parametr di hendler
 // hendler ke service
