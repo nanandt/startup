@@ -26,24 +26,31 @@ func main() {
 	}
 
 	userRepository := user.NewRepository(db)
+
 	userService := user.NewService(userRepository)
+
 	campaignRepository := campaign.NewRepository(db)
 
-	campaigns, err := campaignRepository.FindAll()
-	campaigns, err = campaignRepository.FindByUserID(1)
+	campaignService := campaign.NewService(campaignRepository)
 
-	fmt.Println("debug")
-	fmt.Println("debug")
-	fmt.Println("debug")
-	fmt.Println(len(campaigns))
+	campaign, _ := campaignService.FindCampaigns(10)
+	fmt.Println(len(campaign))
 
-	for _, campaign := range campaigns{
-		fmt.Println(campaign.Name)
-		if len(campaign.CampaignImages) > 0 {
-			fmt.Println(campaign.CampaignImages[0].FileName)
+	// test campaign
+	// campaigns, err := campaignRepository.FindAll()
+	// campaigns, err = campaignRepository.FindByUserID(1)
+	// fmt.Println("debug")
+	// fmt.Println("debug")
+	// fmt.Println("debug")
+	// fmt.Println(len(campaigns))
 
-		}
-	}
+	// for _, campaign := range campaigns{
+	// 	fmt.Println(campaign.Name)
+	// 	if len(campaign.CampaignImages) > 0 {
+	// 		fmt.Println(campaign.CampaignImages[0].FileName)
+
+	// 	}
+	// }
 
 	// test generate token jwt
 	authService := auth.NewService()
