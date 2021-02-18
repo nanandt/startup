@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	dsn := "root:root@tcp(127.0.0.1:3306)/startup?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:root@tcp(127.0.0.1:3306)/bwastartup?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -30,7 +30,7 @@ func main() {
 	campaignRepository := campaign.NewRepository(db)
 
 	campaigns, err := campaignRepository.FindAll()
-	campaigns, err = campaignRepository.FindByUserID(5)
+	campaigns, err = campaignRepository.FindByUserID(1)
 
 	fmt.Println("debug")
 	fmt.Println("debug")
@@ -39,6 +39,10 @@ func main() {
 
 	for _, campaign := range campaigns{
 		fmt.Println(campaign.Name)
+		if len(campaign.CampaignImages) > 0 {
+			fmt.Println(campaign.CampaignImages[0].FileName)
+
+		}
 	}
 
 	// test generate token jwt
