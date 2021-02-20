@@ -97,3 +97,10 @@ func (h *CampaignHandler) CreateCampaign(c *gin.Context){
 		c.JSON(http.StatusOK, response)
 
 }
+
+// user masukan input
+// handler
+// mapping dari input ke input struct (ada 2)
+// input dari user, dan juga input yg ada di uri (passing ke service)
+// service
+// repository update data campaign
