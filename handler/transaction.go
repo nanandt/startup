@@ -42,3 +42,9 @@ func(h *transactionHandler) GetCampaignTransactions(c *gin.Context){
 	c.JSON(http.StatusOK, response)
 
 }
+
+// GetUserTransactions
+// handler
+// ambil data user dari jwt/middleware
+// service
+// repo -> ambil data transaction
