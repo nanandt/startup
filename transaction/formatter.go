@@ -58,6 +58,8 @@ type CampaignFormatter struct {
 	ImageURL string `json:"image_url"`
 }
 
+// FormatUserTransaction is...
+// exported func FormatUserTransaction
 func FormatUserTransaction (transaction Transaction) (UserTransactionFormatter){
 	formatter := UserTransactionFormatter{}
 	formatter.ID = transaction.ID
@@ -79,6 +81,8 @@ func FormatUserTransaction (transaction Transaction) (UserTransactionFormatter){
 	return formatter
 }
 
+// FormatUserTransactions is...
+// exported func FormatUserTransactions
 func FormatUserTransactions(transactions []Transaction) []UserTransactionFormatter{
 	if len(transactions) == 0 {
 		return []UserTransactionFormatter{}
