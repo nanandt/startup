@@ -5,6 +5,7 @@ import (
 	"bwastartup/campaign"
 	"bwastartup/handler"
 	"bwastartup/helper"
+	"bwastartup/transaction"
 	"bwastartup/user"
 	"log"
 	"net/http"
@@ -25,97 +26,18 @@ func main() {
 	}
 
 	userRepository := user.NewRepository(db)
+	transactionRepository := transaction.NewRepository(db)
+	campaignRepository := campaign.NewRepository(db)
 
 	userService := user.NewService(userRepository)
-
-	campaignRepository := campaign.NewRepository(db)
-	// transactionRepository := transaction.NewRepository(db)
-
 	campaignService := campaign.NewService(campaignRepository)
-	campaignHandler := handler.NewCampaignHandler(campaignService)
-
-
-	// test campaign
-	// campaigns, err := campaignRepository.FindAll()
-	// campaigns, err = campaignRepository.FindByUserID(1)
-	// fmt.Println("debug")
-	// fmt.Println("debug")
-	// fmt.Println("debug")
-	// fmt.Println(len(campaigns))
-
-	// for _, campaign := range campaigns{
-	// 	fmt.Println(campaign.Name)
-	// 	if len(campaign.CampaignImages) > 0 {
-	// 		fmt.Println(campaign.CampaignImages[0].FileName)
-
-	// 	}
-	// }
-
-	// test generate token jwt
 	authService := auth.NewService()
-	// fmt.Println(authService.GenerateToken(2000))
-
-	// test save avatar file name
-	// userService.SaveAvatar(1, "images/1-profile-png")
-
-	// cek email user
-	// userByEmail, err := userRepository.FindByEmail("jakaaa@gmail.com")
-	// if err != nil{
-	// 	fmt.Println(err.Error())
-	// }
-
-	// if userByEmail.ID == 0{
-	// 	fmt.Println("User tidak ditemukan")
-	// }
-	// fmt.Println(userByEmail.Name)
+	transactionService := transaction.NewService(transactionRepository)
 
 
-	// test email dan password login
-	// input := user.LoginInput{
-	// 	Email: "harunnn@gmail.com",
-	// 	Password: "password",
-	// }
-	// user, err := userService.Login(input)
-	// if err != nil{
-	// 	fmt.Println("terjadi kesalahan")
-	// 	fmt.Println(err.Error())
-	// }
-
-	// fmt.Println(user.Email)
-	// fmt.Println(user.Name)
-	// test validate token dan ex.token invalid
-	// token, err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0fQ.4VyKdWGh0T4g6_9zbr4U_FJqPuFUi6nOOEoFmff0KiA")
-	// if err != nil {
-	// 	fmt.Println("ERROR")
-	// 	fmt.Println("ERROR")
-	// 	fmt.Println("ERROR")
-	// }
-
-	// if token.Valid{
-	// 	fmt.Println("VALID")
-	// 	fmt.Println("VALID")
-	// 	fmt.Println("VALID")
-	// } else {
-	// 	fmt.Println("INVALID")
-	// }
-
-
-	// input := campaign.CreateCampaignInput{}
-	// input.Name = "Penggalangan Dana Banjir"
-	// input.ShortDescription = "short"
-	// input.Description = "panjaaaaaang"
-	// input.GoalAmount = 100000000
-	// input.Perks = "banjir di jakarta, gempa bumi di jogja, tsunami di palu"
-	// inputUser, _ := userService.GetUserByID(1)
-	// input.User = inputUser
-
-	// _, err = campaignService.CreateCampaign(input)
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
-
-
+	campaignHandler := handler.NewCampaignHandler(campaignService)
 	userHandler := handler.NewUserHandler(userService, authService)
+	transactionHandler := handler.NewTransactionHandler(transactionService)
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
@@ -131,6 +53,7 @@ func main() {
 	api.POST("/campaigns", authMiddleware(authService, userService),campaignHandler.CreateCampaign)
 	api.PUT("/campaigns/:id", authMiddleware(authService, userService),campaignHandler.UpdateCampaign)
 	api.POST("/campaign-images", authMiddleware(authService, userService),campaignHandler.UploadImage)
+	api.GET("/campaigns/:id/transactions", authMiddleware(authService, userService), transactionHandler.GetCampaignTransactions)
 
 	router.Run()
 
