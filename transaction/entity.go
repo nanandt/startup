@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-
+// Transaction ...
 type Transaction struct {
 	ID         int
 	CampaignID int

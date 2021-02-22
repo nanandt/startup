@@ -11,7 +11,7 @@ type Repository interface {
 	GetByUserID (userID int)([]Transaction, error)
 }
 
-// NewRepository ...
+// NewRepository is...
 // exported func NewRepository
 func NewRepository(db *gorm.DB) *repository{
 	return &repository{db}
@@ -31,7 +31,7 @@ func (r *repository) GetByCampaignID (campaignID int) ([]Transaction, error){
 func (r *repository) GetByUserID (userID int)([]Transaction, error){
 	var transactions []Transaction
 
-	err := r.db.Preload("Campaign.CampaignImages", "campaign_images.is_primary = 1").Where("user_id = ?", userID).Find(&transactions).Error
+	err := r.db.Preload("Campaign.CampaignImages", "campaign_images.is_primary = 1").Where("user_id = ?", userID).Order("id DESC").Find(&transactions).Error
 	if err != nil {
 		return transactions, err
 	}
