@@ -27,14 +27,14 @@ func(h *transactionHandler) GetCampaignTransactions(c *gin.Context){
 		return
 	}
 
-	transaction, err := h.service.GetTransactionsByCampaignID(input)
+	transactions, err := h.service.GetTransactionsByCampaignID(input)
 	if err != nil {
 		response := helper.APIResponse("Failed to get campaign's transactions", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	response := helper.APIResponse("Success to update campaign", http.StatusOK, "success", transaction)
+	response := helper.APIResponse("Campaign's transactions", http.StatusOK, "success", transaction.FormatCampaigntransactions(transactions))
 	c.JSON(http.StatusOK, response)
 
 }
