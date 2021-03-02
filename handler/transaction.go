@@ -9,16 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 type transactionHandler struct {
 	service transaction.Service
 }
 
-func NewTransactionHandler(service transaction.Service) *transactionHandler{
+func NewTransactionHandler(service transaction.Service) *transactionHandler {
 	return &transactionHandler{service}
 }
 
-func(h *transactionHandler) GetCampaignTransactions(c *gin.Context){
+func (h *transactionHandler) GetCampaignTransactions(c *gin.Context) {
 	var input transaction.GetCampaignTrnsactionsInput
 
 	err := c.ShouldBindUri(&input)
@@ -43,7 +42,7 @@ func(h *transactionHandler) GetCampaignTransactions(c *gin.Context){
 
 }
 
-func (h *transactionHandler) GetUserTransactions(c *gin.Context){
+func (h *transactionHandler) GetUserTransactions(c *gin.Context) {
 	currentUser := c.MustGet("currentUser").(user.User)
 	userID := currentUser.ID
 
@@ -58,7 +57,7 @@ func (h *transactionHandler) GetUserTransactions(c *gin.Context){
 	c.JSON(http.StatusOK, response)
 }
 
-func (h *transactionHandler) CreateTransaction(c *gin.Context){
+func (h *transactionHandler) CreateTransaction(c *gin.Context) {
 	var input transaction.CreateTransactionInput
 
 	err := c.ShouldBindJSON(&input)
@@ -81,6 +80,6 @@ func (h *transactionHandler) CreateTransaction(c *gin.Context){
 		return
 	}
 
-	response := helper.APIResponse("Success to Create Transaction", http.StatusOK, "success", newTransaction)
+	response := helper.APIResponse("Success to Create Transaction", http.StatusOK, "success", transaction.FormatTransaction(newTransaction))
 	c.JSON(http.StatusOK, response)
 }
