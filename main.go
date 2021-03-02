@@ -38,7 +38,7 @@ func main() {
 
 	campaignHandler := handler.NewCampaignHandler(campaignService)
 	userHandler := handler.NewUserHandler(userService, authService)
-	transactionHandler := handler.NewTransactionHandler(transactionService)
+	transactionHandler := handler.NewTransactionHandler(transactionService, paymentService)
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
