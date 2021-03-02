@@ -5,6 +5,7 @@ import (
 	"bwastartup/campaign"
 	"bwastartup/handler"
 	"bwastartup/helper"
+	"bwastartup/payment"
 	"bwastartup/transaction"
 	"bwastartup/user"
 	"log"
@@ -32,18 +33,18 @@ func main() {
 	userService := user.NewService(userRepository)
 	campaignService := campaign.NewService(campaignRepository)
 	authService := auth.NewService()
-	transactionService := transaction.NewService(transactionRepository, campaignRepository)
+	paymentService := payment.NewService()
+	transactionService := transaction.NewService(transactionRepository, campaignRepository, paymentService)
 
-	user, _ := userService.GetUserByID(3)
+	// user, _ := userService.GetUserByID(3)
 
-	input := transaction.CreateTransactionInput{
-		CampaignID: 8,
-		Amount: 40000,
-		User: user,
-	}
+	// input := transaction.CreateTransactionInput{
+	// 	CampaignID: 8,
+	// 	Amount:     40000,
+	// 	User:       user,
+	// }
 
-	transactionService.CreateTransaction(input)
-
+	// transactionService.CreateTransaction(input)
 
 	campaignHandler := handler.NewCampaignHandler(campaignService)
 	userHandler := handler.NewUserHandler(userService, authService)
@@ -60,47 +61,46 @@ func main() {
 
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
-	api.POST("/campaigns", authMiddleware(authService, userService),campaignHandler.CreateCampaign)
-	api.PUT("/campaigns/:id", authMiddleware(authService, userService),campaignHandler.UpdateCampaign)
-	api.POST("/campaign-images", authMiddleware(authService, userService),campaignHandler.UploadImage)
+	api.POST("/campaigns", authMiddleware(authService, userService), campaignHandler.CreateCampaign)
+	api.PUT("/campaigns/:id", authMiddleware(authService, userService), campaignHandler.UpdateCampaign)
+	api.POST("/campaign-images", authMiddleware(authService, userService), campaignHandler.UploadImage)
 
 	api.GET("/campaigns/:id/transactions", authMiddleware(authService, userService), transactionHandler.GetCampaignTransactions)
 	api.GET("/transactions", authMiddleware(authService, userService), transactionHandler.GetUserTransactions)
 	api.POST("/transactions", authMiddleware(authService, userService), transactionHandler.CreateTransaction)
 
-
 	router.Run()
 
 }
 
-func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc{
-	return func (c *gin.Context){
-	authHeader := c.GetHeader("Authorization")
+func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
 
-	if !strings.Contains(authHeader, "Bearer"){
-		response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
-		c.AbortWithStatusJSON(http.StatusUnauthorized,response)
-		return
-	}
+		if !strings.Contains(authHeader, "Bearer") {
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
 
-	// Bearer tokentokentoken
-	tokenString := ""
-	arrayToken := strings.Split(authHeader, " ")
-	if len(arrayToken) == 2{
-		tokenString = arrayToken[1]
-	}
+		// Bearer tokentokentoken
+		tokenString := ""
+		arrayToken := strings.Split(authHeader, " ")
+		if len(arrayToken) == 2 {
+			tokenString = arrayToken[1]
+		}
 
-	token, err := authService.ValidateToken(tokenString)
+		token, err := authService.ValidateToken(tokenString)
 		if err != nil {
 			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
-			c.AbortWithStatusJSON(http.StatusUnauthorized,response)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
 
 		claim, ok := token.Claims.(jwt.MapClaims)
 		if !ok || !token.Valid {
 			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
-			c.AbortWithStatusJSON(http.StatusUnauthorized,response)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
 
@@ -108,7 +108,7 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 		user, err := userService.GetUserByID(userID)
 		if err != nil {
 			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
-			c.AbortWithStatusJSON(http.StatusUnauthorized,response)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
 

@@ -7,13 +7,12 @@ import (
 	"github.com/gosimple/slug"
 )
 
-
 type Service interface {
 	GetCampaigns(userID int) ([]Campaign, error)
 	GetCampaignByID(input GetCampaignDetailInput) (Campaign, error)
 	CreateCampaign(input CreateCampaignInput) (Campaign, error)
-	UpdateCampaign(inputID GetCampaignDetailInput, inputData CreateCampaignInput)(Campaign, error)
-	SaveCampaignImage(input CreateCampaignImageInput, fileLocation string)(CampaignImage, error)
+	UpdateCampaign(inputID GetCampaignDetailInput, inputData CreateCampaignInput) (Campaign, error)
+	SaveCampaignImage(input CreateCampaignImageInput, fileLocation string) (CampaignImage, error)
 }
 
 type service struct {
@@ -70,7 +69,7 @@ func (s *service) CreateCampaign(input CreateCampaignInput) (Campaign, error) {
 	return newCampaign, nil
 }
 
-func (s *service) UpdateCampaign(inputID GetCampaignDetailInput, inputData CreateCampaignInput)(Campaign, error){
+func (s *service) UpdateCampaign(inputID GetCampaignDetailInput, inputData CreateCampaignInput) (Campaign, error) {
 	campaign, err := s.repository.FindByID(inputID.ID)
 	if err != nil {
 		return campaign, err
@@ -95,7 +94,7 @@ func (s *service) UpdateCampaign(inputID GetCampaignDetailInput, inputData Creat
 
 }
 
-func (s *service) SaveCampaignImage(input CreateCampaignImageInput, fileLocation string)(CampaignImage, error){
+func (s *service) SaveCampaignImage(input CreateCampaignImageInput, fileLocation string) (CampaignImage, error) {
 	campaign, err := s.repository.FindByID(input.CampaignID)
 	if err != nil {
 		return CampaignImage{}, err
@@ -104,7 +103,6 @@ func (s *service) SaveCampaignImage(input CreateCampaignImageInput, fileLocation
 	if campaign.UserID != input.User.ID {
 		return CampaignImage{}, errors.New("Anda siapa main edit data aja cuk")
 	}
-
 
 	isPrimary := 0
 	if input.IsPrimary {

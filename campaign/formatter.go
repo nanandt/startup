@@ -41,31 +41,32 @@ func FormatCampaigns(campaigns []Campaign) []CampaignFormatter {
 
 	return campaignsFomatter
 }
+
 //CampaignDetailFormatter is ...
 type CampaignDetailFormatter struct {
-	ID               int      `json:"id"`
-	Name             string   `json:"name"`
-	ShortDescription string   `json:"short_description"`
-	Description      string   `json:"description"`
-	ImageURL         string   `json:"image_url"`
-	GoalAmount       int      `json:"goal_amount"`
-	CurrentAmount    int      `json:"current_amount"`
-	UserID           int      `json:"user_id"`
-	Slug             string   `json:"slug"`
-	Perks            []string `json:"perks"`
-	User CampaignUserFormatter `json:"user"`
-	Images []CampaignImageFormatter `json:"images"`
+	ID               int                      `json:"id"`
+	Name             string                   `json:"name"`
+	ShortDescription string                   `json:"short_description"`
+	Description      string                   `json:"description"`
+	ImageURL         string                   `json:"image_url"`
+	GoalAmount       int                      `json:"goal_amount"`
+	CurrentAmount    int                      `json:"current_amount"`
+	UserID           int                      `json:"user_id"`
+	Slug             string                   `json:"slug"`
+	Perks            []string                 `json:"perks"`
+	User             CampaignUserFormatter    `json:"user"`
+	Images           []CampaignImageFormatter `json:"images"`
 }
 
 // CampaignUserFormatter is ...
 type CampaignUserFormatter struct {
-	Name string `json:"name"`
+	Name     string `json:"name"`
 	ImageURL string `json:"image_url"`
 }
 
 type CampaignImageFormatter struct {
-	ImageURL string `json:"image_url"`
-	IsPrimary bool `json:"is_primary"`
+	ImageURL  string `json:"image_url"`
+	IsPrimary bool   `json:"is_primary"`
 }
 
 func FormatCampaignDetail(campaign Campaign) CampaignDetailFormatter {
@@ -85,7 +86,7 @@ func FormatCampaignDetail(campaign Campaign) CampaignDetailFormatter {
 	}
 
 	var perks []string
-	for _, perk := range strings.Split(campaign.Perks, ","){
+	for _, perk := range strings.Split(campaign.Perks, ",") {
 		perks = append(perks, strings.TrimSpace(perk))
 	}
 
@@ -100,7 +101,7 @@ func FormatCampaignDetail(campaign Campaign) CampaignDetailFormatter {
 
 	images := []CampaignImageFormatter{}
 
-	for _, image := range campaign.CampaignImages{
+	for _, image := range campaign.CampaignImages {
 		campaignImageFormatter := CampaignImageFormatter{}
 		campaignImageFormatter.ImageURL = image.FileName
 
@@ -114,7 +115,6 @@ func FormatCampaignDetail(campaign Campaign) CampaignDetailFormatter {
 	}
 
 	campaignDetailFormatter.Images = images
-
 
 	return campaignDetailFormatter
 }
