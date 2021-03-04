@@ -10,27 +10,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 type userHandler struct {
 	userService user.Service
 	authService auth.Service
 }
 
-
 // NewUserHandler ...
 // exported func NewUserHandler
-func NewUserHandler(userService user.Service, authService auth.Service) *userHandler{
+func NewUserHandler(userService user.Service, authService auth.Service) *userHandler {
 	return &userHandler{userService, authService}
 }
 
-func (h *userHandler) RegisterUser(c *gin.Context){
-	// tangkap input dari user
-	// map input dari user ke struct RegisterUserInput
-	// struct diatas diparsing sbg parameter service
+func (h *userHandler) RegisterUser(c *gin.Context) {
 
 	var input user.RegisterUserInput
 	err := c.ShouldBindJSON(&input)
-	if err != nil{
+	if err != nil {
 
 		errors := helper.FormatValidationError(err)
 
@@ -41,27 +36,26 @@ func (h *userHandler) RegisterUser(c *gin.Context){
 		return
 	}
 
-	newUser,err := h.userService.RegisterUser(input)
+	newUser, err := h.userService.RegisterUser(input)
 
-	if err != nil{
+	if err != nil {
 		response := helper.APIResponse("Register Account Failed", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	token, err := h.authService.GenerateToken(newUser.ID)
-	if err != nil{
+	if err != nil {
 		response := helper.APIResponse("Register Account Failed", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-
 	formatter := user.FormatUser(newUser, token)
 
 	response := helper.APIResponse("Account has been registered", http.StatusOK, "success", formatter)
 
-	if err != nil{
+	if err != nil {
 		response := helper.APIResponse("Register Account Failed", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
@@ -70,42 +64,35 @@ func (h *userHandler) RegisterUser(c *gin.Context){
 	c.JSON(http.StatusOK, response)
 }
 
-func (h *userHandler) Login(c *gin.Context){
-	// user melakukan input email dan password
-	// input ditangkap di handler
-	// mapping dari input user ke input struct
-	// input struct passing ke service
-	// di service mencari dgn bantuan repositori user dgn email tertentu
-	// mencocokan password
+func (h *userHandler) Login(c *gin.Context) {
 
 	var input user.LoginInput
 
 	err := c.ShouldBindJSON(&input)
-	if err != nil{
+	if err != nil {
 		errors := helper.FormatValidationError(err)
 		errorMessage := gin.H{"errors": errors}
 
 		response := helper.APIResponse("Login Failed", http.StatusUnprocessableEntity, "error", errorMessage)
-		c.JSON(http.StatusUnprocessableEntity,response)
+		c.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
 
 	loggedinUser, err := h.userService.Login(input)
-	if err != nil{
+	if err != nil {
 		errorMessage := gin.H{"error": err.Error()}
 
 		response := helper.APIResponse("Login Failed", http.StatusUnprocessableEntity, "error", errorMessage)
-		c.JSON(http.StatusUnprocessableEntity,response)
+		c.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
 
 	token, err := h.authService.GenerateToken(loggedinUser.ID)
-	if err != nil{
+	if err != nil {
 		response := helper.APIResponse("Login Failed", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-
 
 	formatter := user.FormatUser(loggedinUser, token)
 
@@ -114,22 +101,16 @@ func (h *userHandler) Login(c *gin.Context){
 	c.JSON(http.StatusOK, response)
 }
 
-func(h *userHandler) CheckEmailAvailability(c *gin.Context){
-	// ada input email dari user
-	// input email di mapping ke struct input
-	// struct input di parsing ke service
-	// service memanggil repository - apakah email sudah ada atau belum
-	// repository query ke database
-
+func (h *userHandler) CheckEmailAvailability(c *gin.Context) {
 	var input user.CheckEmailInput
 
 	err := c.ShouldBindJSON(&input)
-	if err != nil{
+	if err != nil {
 		errors := helper.FormatValidationError(err)
 		errorMessage := gin.H{"errors": errors}
 
 		response := helper.APIResponse("Email Checking Failed", http.StatusUnprocessableEntity, "error", errorMessage)
-		c.JSON(http.StatusUnprocessableEntity,response)
+		c.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
 
@@ -138,19 +119,13 @@ func(h *userHandler) CheckEmailAvailability(c *gin.Context){
 
 		errorMessage := gin.H{"errors": "Server Error"}
 		response := helper.APIResponse("Email Checking Failed", http.StatusUnprocessableEntity, "error", errorMessage)
-		c.JSON(http.StatusUnprocessableEntity,response)
+		c.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
 
 	data := gin.H{
 		"is_available": IsEmailAvailable,
 	}
-
-	// metaMessage := "Email has been registered"
-
-	// if IsEmailAvailable {
-	// 	metaMessage = "Email is Available"
-	// }
 
 	var metaMessage string
 
@@ -160,14 +135,13 @@ func(h *userHandler) CheckEmailAvailability(c *gin.Context){
 		metaMessage = "Email has been registered"
 	}
 
-
 	response := helper.APIResponse(metaMessage, http.StatusOK, "success", data)
-	c.JSON(http.StatusOK,response)
+	c.JSON(http.StatusOK, response)
 	return
 }
 
-func (h *userHandler) UploadAvatar(c *gin.Context){
-	// input file  dari user
+func (h *userHandler) UploadAvatar(c *gin.Context) {
+
 	file, err := c.FormFile("avatar")
 	if err != nil {
 		data := gin.H{"is_uploaded": false}
@@ -200,11 +174,15 @@ func (h *userHandler) UploadAvatar(c *gin.Context){
 	data := gin.H{"is_uploaded": true}
 	response := helper.APIResponse("Avatar successfuly uploaded", http.StatusOK, "success", data)
 	c.JSON(http.StatusOK, response)
+}
 
+func (h *userHandler) FetchUser(c *gin.Context) {
 
-	// simpan gambar di folder "images/"
-	// di service panggil repository utk menntukn siapa user yg mengakses
-	// JWT (sementara hardcode, seakan2 user yg login ID = 1)
-	// repo ambil data user yg id nya = 1
-	// repo update data user simpan lokasi file (yg disimpan adalah pathnya)
+	currentUser := c.MustGet("currentUser").(user.User)
+
+	formatter := user.FormatUser(currentUser, "")
+
+	response := helper.APIResponse("Sukses minta data user gan", http.StatusOK, "success", formatter)
+
+	c.JSON(http.StatusOK, response)
 }
