@@ -64,5 +64,25 @@ func (h *userHandler) Edit(c *gin.Context){
 	}
 
 	c.HTML(http.StatusOK, "user_edit.html", registerUser)
+}
 
+func (h *userHandler) Update(c *gin.Context){
+	idParam := c.Param("id")
+	id, _ := strconv.Atoi(idParam)
+
+	var input user.FormUpdateUserInput
+	err := c.ShouldBind(&input)
+	if err != nil {
+		//sekip
+	}
+
+	input.ID = id
+
+	_, err = h.userService.UpdateUser(input)
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "error.html", nil)
+		return
+	}
+
+	c.Redirect(http.StatusFound, "/users")
 }
