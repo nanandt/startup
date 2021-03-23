@@ -63,7 +63,13 @@ func (h *userHandler) Edit(c *gin.Context){
 		c.HTML(http.StatusInternalServerError, "error.html", nil)
 	}
 
-	c.HTML(http.StatusOK, "user_edit.html", registerUser)
+	input := user.FormUpdateUserInput{}
+	input.ID = registerUser.ID
+	input.Name = registerUser.Name
+	input.Email = registerUser.Email
+	input.Occupation = registerUser.Occupation
+
+	c.HTML(http.StatusOK, "user_edit.html", input)
 }
 
 func (h *userHandler) Update(c *gin.Context){
@@ -73,7 +79,8 @@ func (h *userHandler) Update(c *gin.Context){
 	var input user.FormUpdateUserInput
 	err := c.ShouldBind(&input)
 	if err != nil {
-		//sekip
+		input.Error = err
+		c.HTML(http.StatusOK, "user_edit", input)
 	}
 
 	input.ID = id
